@@ -15,6 +15,7 @@ import { useProducts } from '../hooks/useProducts';
 import { useSearch } from '../hooks/useSearch';
 import { useProductStore } from '../store/productStore';
 import { Product, ProductCategory } from '../types';
+import { SortModal, SortOption } from '../components/SortModal';
 
 export const ProductListScreen: React.FC = () => {
   const { products, total, isLoading, isLoadingMore, hasMore, loadMore, refresh } = useProducts();
@@ -32,13 +33,15 @@ export const ProductListScreen: React.FC = () => {
 
   const categories: ProductCategory[] = ['Electronics', 'Clothing', 'Home & Garden', 'Books', 'Sports'];
   
-  const sortOptions = [
-    { label: 'Newest First', value: 'newest-first' as const },
-    { label: 'Price: Low to High', value: 'price-low-high' as const },
-    { label: 'Price: High to Low', value: 'price-high-low' as const },
-    { label: 'Name: A-Z', value: 'name-a-z' as const },
-    { label: 'Name: Z-A', value: 'name-z-a' as const },
-    { label: 'Highest Rated', value: 'rating-high-low' as const },
+  const [sortModalVisible, setSortModalVisible] = React.useState(false);
+
+  const sortOptions: SortOption[] = [
+    { label: 'Newest First', value: 'newest-first' },
+    { label: 'Price: Low to High', value: 'price-low-high' },
+    { label: 'Price: High to Low', value: 'price-high-low' },
+    { label: 'Name: A-Z', value: 'name-a-z' },
+    { label: 'Name: Z-A', value: 'name-z-a' },
+    { label: 'Highest Rated', value: 'rating-high-low' },
   ];
 
   const handleProductPress = (product: Product) => {
@@ -149,7 +152,10 @@ export const ProductListScreen: React.FC = () => {
           )}
         </View>
 
-        <TouchableOpacity className="flex-row items-center bg-slate-100 px-comfortable py-cozy rounded-pill ml-cozy">
+        <TouchableOpacity
+          className="flex-row items-center bg-slate-100 px-comfortable py-cozy rounded-pill ml-cozy"
+          onPress={() => setSortModalVisible(true)}
+        >
           <Text className="text-body-secondary font-medium text-void-black-700 mr-tight">
             {sortOptions.find(option => option.value === sortBy)?.label}
           </Text>
@@ -262,6 +268,13 @@ export const ProductListScreen: React.FC = () => {
           offset: 320 * index,
           index,
         })}
+      />
+      <SortModal
+        visible={sortModalVisible}
+        options={sortOptions}
+        selected={sortBy}
+        onSelect={setSortBy}
+        onClose={() => setSortModalVisible(false)}
       />
     </SafeAreaView>
   );
