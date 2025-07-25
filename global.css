@@ -4,15 +4,15 @@
 
 @layer components {
   .flux-card {
-    @apply bg-white rounded-flux shadow-neural border border-slate-100;
+    @apply bg-white rounded-flux border border-slate-100;
   }
   
   .flux-card-hover {
-    @apply shadow-neural-hover transform -translate-y-1;
+    @apply transform -translate-y-1;
   }
   
   .flux-button-primary {
-    @apply bg-neural-flow text-white rounded-neural px-spacious py-comfortable shadow-neural;
+    @apply bg-neural-flow text-white rounded-neural px-spacious py-comfortable;
   }
   
   .flux-button-secondary {

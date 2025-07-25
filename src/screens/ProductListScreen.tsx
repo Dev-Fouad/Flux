@@ -11,23 +11,22 @@ import {
 } from 'react-native';
 import { Search, Filter, ChevronDown, X } from 'lucide-react-native';
 import { ProductCard } from '../components/ProductCard';
+import { useProducts } from '../hooks/useProducts';
+import { useSearch } from '../hooks/useSearch';
 import { useProductStore } from '../store/productStore';
 import { Product, ProductCategory } from '../types';
 
 export const ProductListScreen: React.FC = () => {
+  const { products, total, isLoading, isLoadingMore, hasMore, loadMore, refresh } = useProducts();
+  const { searchTerm, setSearchTerm, clearSearch } = useSearch();
+  
+  // Only filters logic from store (will be moved to useFilters hook later)
   const {
-    filteredProducts,
     filters,
     sortBy,
-    pagination,
-    isLoading,
-    isLoadingMore,
-    setSearchQuery,
     addCategoryFilter,
     removeCategoryFilter,
     clearFilters,
-    loadMoreProducts,
-    refreshProducts,
     setSortBy,
   } = useProductStore();
 
@@ -44,6 +43,7 @@ export const ProductListScreen: React.FC = () => {
 
   const handleProductPress = (product: Product) => {
     console.log('Product pressed:', product.name);
+    // TODO: Navigate to product detail
   };
 
   const handleAddToCart = (product: Product) => {
@@ -71,7 +71,7 @@ export const ProductListScreen: React.FC = () => {
         onPress={() => handleProductPress(item)}
         onAddToCart={() => handleAddToCart(item)}
         onToggleFavorite={() => handleToggleFavorite(item)}
-        isFavorite={false} // TODO: Get from favorites store
+        isFavorite={false} // TODO: Get from favorites hook
       />
     </View>
   );
@@ -92,13 +92,13 @@ export const ProductListScreen: React.FC = () => {
           <Search size={20} className="text-void-black-500 mr-cozy" />
           <TextInput
             placeholder="Search products..."
-            value={filters.searchQuery}
-            onChangeText={setSearchQuery}
+            value={searchTerm}
+            onChangeText={setSearchTerm}
             className="flex-1 text-body-primary text-void-black-900"
             placeholderTextColor="#6c757d"
           />
-          {filters.searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
+          {searchTerm.length > 0 && (
+            <TouchableOpacity onPress={clearSearch}>
               <X size={20} className="text-void-black-400" />
             </TouchableOpacity>
           )}
@@ -133,9 +133,12 @@ export const ProductListScreen: React.FC = () => {
 
       <View className="flex-row items-center justify-between mb-comfortable">
         <View className="flex-1">
-          {(filters.categories.length > 0 || filters.searchQuery) && (
+          {(filters.categories.length > 0 || searchTerm) && (
             <TouchableOpacity
-              onPress={clearFilters}
+              onPress={() => {
+                clearFilters();
+                clearSearch();
+              }}
               className="flex-row items-center bg-plasma-coral-100 px-comfortable py-cozy rounded-pill"
             >
               <X size={14} className="text-plasma-coral-500 mr-tight" />
@@ -146,7 +149,6 @@ export const ProductListScreen: React.FC = () => {
           )}
         </View>
 
-        {/* Sort Button */}
         <TouchableOpacity className="flex-row items-center bg-slate-100 px-comfortable py-cozy rounded-pill ml-cozy">
           <Text className="text-body-secondary font-medium text-void-black-700 mr-tight">
             {sortOptions.find(option => option.value === sortBy)?.label}
@@ -155,20 +157,19 @@ export const ProductListScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Results Count */}
       <Text className="text-body-secondary text-void-black-500 mb-comfortable">
-        Showing {filteredProducts.length} of {pagination.total} products
+        Showing {products.length} of {total} products
       </Text>
     </View>
   );
 
   const renderLoadMoreButton = () => {
-    if (!pagination.hasMore) return null;
+    if (!hasMore) return null;
 
     return (
       <View className="p-spacious">
         <TouchableOpacity
-          onPress={loadMoreProducts}
+          onPress={loadMore}
           disabled={isLoadingMore}
           className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center"
         >
@@ -196,7 +197,10 @@ export const ProductListScreen: React.FC = () => {
         Try adjusting your filters or search terms to find what you're looking for.
       </Text>
       <TouchableOpacity
-        onPress={clearFilters}
+        onPress={() => {
+          clearFilters();
+          clearSearch();
+        }}
         className="bg-neural-flow rounded-neural py-comfortable px-spacious"
       >
         <Text className="text-button-text font-semibold text-white">
@@ -222,7 +226,7 @@ export const ProductListScreen: React.FC = () => {
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
       <FlatList
-        data={filteredProducts}
+        data={products}
         renderItem={renderProductCard}
         keyExtractor={(item) => item.id}
         numColumns={2}
@@ -233,14 +237,14 @@ export const ProductListScreen: React.FC = () => {
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={refreshProducts}
+            onRefresh={refresh}
             colors={['#6366f1']}
             tintColor="#6366f1"
           />
         }
         onEndReached={() => {
-          if (!isLoadingMore && pagination.hasMore) {
-            loadMoreProducts();
+          if (!isLoadingMore && hasMore) {
+            loadMore();
           }
         }}
         onEndReachedThreshold={0.5}
@@ -250,6 +254,14 @@ export const ProductListScreen: React.FC = () => {
         columnWrapperStyle={{
           paddingHorizontal: 12,
         }}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={11}
+        getItemLayout={(_, index) => ({
+          length: 320, // estimated card height
+          offset: 320 * index,
+          index,
+        })}
       />
     </SafeAreaView>
   );

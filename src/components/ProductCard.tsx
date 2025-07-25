@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, Pressable, ActivityIndicator } from 'react-native';
 import { Star, ShoppingCart, Heart } from 'lucide-react-native';
 import { Product } from '../types';
 
@@ -11,60 +11,51 @@ interface ProductCardProps {
   isFavorite?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
+const ProductCardComponent: React.FC<ProductCardProps> = ({
   product,
   onPress,
   onAddToCart,
   onToggleFavorite,
   isFavorite = false,
 }) => {
-  const formatPrice = (price: number) => {
-    return `₦${price.toLocaleString()}`;
-  };
-
+  const [imageLoading, setImageLoading] = useState(true);
+  const formatPrice = (price: number) => `₦${price.toLocaleString()}`;
   const renderStars = (rating: number) => {
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
-
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <Star
-          key={i}
-          size={12}
-          className="text-neural-gold-500"
-          fill="#fbbf24"
-        />
+        <Star key={i} size={12} className="text-neural-gold-500" fill="#fbbf24" />
       );
     }
-
     if (hasHalfStar) {
       stars.push(
-        <Star
-          key={fullStars}
-          size={12}
-          className="text-neural-gold-500"
-          fill="#fbbf24"
-          opacity={0.5}
-        />
+        <Star key={fullStars} size={12} className="text-neural-gold-500" fill="#fbbf24" opacity={0.5} />
       );
     }
-
     return stars;
   };
-
   return (
     <Pressable
       onPress={onPress}
       className="flux-card w-full mb-comfortable active:scale-[0.98] transition-transform duration-150"
     >
+      {/* Image Container */}
       <View className="relative">
         <Image
           source={{ uri: product.image }}
           className="w-full h-40 rounded-neural bg-slate-200"
           resizeMode="cover"
+          onLoadStart={() => setImageLoading(true)}
+          onLoadEnd={() => setImageLoading(false)}
         />
-        
+        {imageLoading && (
+          <View className="absolute inset-0 items-center justify-center flex-row">
+            <ActivityIndicator size="small" color="#6366f1" />
+          </View>
+        )}
+        {/* Badges */}
         <View className="absolute top-cozy left-cozy flex-row gap-tight">
           {product.isNew && (
             <View className="bg-cyber-lime-500 px-cozy py-tight rounded-md">
@@ -79,10 +70,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </View>
           )}
         </View>
-
+        {/* Favorite Button */}
         <TouchableOpacity
           onPress={onToggleFavorite}
-          className="absolute top-cozy right-cozy w-8 h-8 bg-white rounded-full items-center justify-center shadow-neural"
+          className="absolute top-cozy right-cozy w-8 h-8 bg-white rounded-full items-center justify-center"
           activeOpacity={0.7}
         >
           <Heart
@@ -92,19 +83,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           />
         </TouchableOpacity>
       </View>
-
+      {/* Content */}
       <View className="p-spacious">
+        {/* Brand */}
         <Text className="text-caption-smart font-medium text-void-black-500 uppercase tracking-wide mb-tight">
           {product.brand}
         </Text>
-
+        {/* Product Name */}
         <Text
           className="text-body-primary font-medium text-void-black-900 mb-cozy"
           numberOfLines={2}
         >
           {product.name}
         </Text>
-
+        {/* Rating */}
         <View className="flex-row items-center mb-comfortable">
           <View className="flex-row items-center gap-tight">
             {renderStars(product.rating)}
@@ -113,7 +105,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.rating} ({product.reviewCount})
           </Text>
         </View>
-
+        {/* Price Section */}
         <View className="flex-row items-center justify-between mb-comfortable">
           <View className="flex-row items-center gap-cozy">
             <Text className="text-price-standard font-bold text-neural-purple-500">
@@ -126,10 +118,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </View>
         </View>
-
+        {/* Add to Cart Button */}
         <TouchableOpacity
           onPress={onAddToCart}
-          className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center gap-cozy shadow-neural active:scale-[0.98] transition-transform duration-150"
+          className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center gap-cozy active:scale-[0.98] transition-transform duration-150"
           activeOpacity={0.9}
         >
           <ShoppingCart size={16} className="text-white" />
@@ -140,4 +132,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </View>
     </Pressable>
   );
-}; 
+};
+
+export const ProductCard = React.memo(ProductCardComponent); 
