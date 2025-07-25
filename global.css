@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .flux-card {
+    @apply bg-white rounded-flux shadow-neural border border-slate-100;
+  }
+  
+  .flux-card-hover {
+    @apply shadow-neural-hover transform -translate-y-1;
+  }
+  
+  .flux-button-primary {
+    @apply bg-neural-flow text-white rounded-neural px-spacious py-comfortable shadow-neural;
+  }
+  
+  .flux-button-secondary {
+    @apply bg-plasma-flow text-white rounded-neural px-spacious py-comfortable;
+  }
+  
+  .flux-chip {
+    @apply bg-slate-100 text-slate-700 rounded-pill px-comfortable py-cozy;
+  }
+  
+  .flux-chip-active {
+    @apply bg-neural-flow text-white rounded-pill px-comfortable py-cozy;
+  }
+  
+  .flux-input {
+    @apply bg-slate-50 border-2 border-transparent rounded-neural px-spacious py-comfortable text-body-primary;
+  }
+  
+  .flux-input-focus {
+    @apply border-neural-purple-500 bg-white;
+  }
+} 
