@@ -1,0 +1,143 @@
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
+import { Star, ShoppingCart, Heart } from 'lucide-react-native';
+import { Product } from '../types';
+
+interface ProductCardProps {
+  product: Product;
+  onPress?: () => void;
+  onAddToCart?: () => void;
+  onToggleFavorite?: () => void;
+  isFavorite?: boolean;
+}
+
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onPress,
+  onAddToCart,
+  onToggleFavorite,
+  isFavorite = false,
+}) => {
+  const formatPrice = (price: number) => {
+    return `₦${price.toLocaleString()}`;
+  };
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <Star
+          key={i}
+          size={12}
+          className="text-neural-gold-500"
+          fill="#fbbf24"
+        />
+      );
+    }
+
+    if (hasHalfStar) {
+      stars.push(
+        <Star
+          key={fullStars}
+          size={12}
+          className="text-neural-gold-500"
+          fill="#fbbf24"
+          opacity={0.5}
+        />
+      );
+    }
+
+    return stars;
+  };
+
+  return (
+    <Pressable
+      onPress={onPress}
+      className="flux-card w-full mb-comfortable active:scale-[0.98] transition-transform duration-150"
+    >
+      <View className="relative">
+        <Image
+          source={{ uri: product.image }}
+          className="w-full h-40 rounded-neural bg-slate-200"
+          resizeMode="cover"
+        />
+        
+        <View className="absolute top-cozy left-cozy flex-row gap-tight">
+          {product.isNew && (
+            <View className="bg-cyber-lime-500 px-cozy py-tight rounded-md">
+              <Text className="text-caption-smart font-medium text-white">NEW</Text>
+            </View>
+          )}
+          {product.discount && (
+            <View className="bg-plasma-coral-500 px-cozy py-tight rounded-md">
+              <Text className="text-caption-smart font-medium text-white">
+                -{product.discount}%
+              </Text>
+            </View>
+          )}
+        </View>
+
+        <TouchableOpacity
+          onPress={onToggleFavorite}
+          className="absolute top-cozy right-cozy w-8 h-8 bg-white rounded-full items-center justify-center shadow-neural"
+          activeOpacity={0.7}
+        >
+          <Heart
+            size={16}
+            className={isFavorite ? "text-plasma-coral-500" : "text-slate-400"}
+            fill={isFavorite ? "#ff4b6b" : "none"}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <View className="p-spacious">
+        <Text className="text-caption-smart font-medium text-void-black-500 uppercase tracking-wide mb-tight">
+          {product.brand}
+        </Text>
+
+        <Text
+          className="text-body-primary font-medium text-void-black-900 mb-cozy"
+          numberOfLines={2}
+        >
+          {product.name}
+        </Text>
+
+        <View className="flex-row items-center mb-comfortable">
+          <View className="flex-row items-center gap-tight">
+            {renderStars(product.rating)}
+          </View>
+          <Text className="text-caption-smart text-void-black-500 ml-cozy">
+            {product.rating} ({product.reviewCount})
+          </Text>
+        </View>
+
+        <View className="flex-row items-center justify-between mb-comfortable">
+          <View className="flex-row items-center gap-cozy">
+            <Text className="text-price-standard font-bold text-neural-purple-500">
+              {formatPrice(product.price)}
+            </Text>
+            {product.originalPrice && (
+              <Text className="text-body-secondary text-void-black-400 line-through">
+                {formatPrice(product.originalPrice)}
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <TouchableOpacity
+          onPress={onAddToCart}
+          className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center gap-cozy shadow-neural active:scale-[0.98] transition-transform duration-150"
+          activeOpacity={0.9}
+        >
+          <ShoppingCart size={16} className="text-white" />
+          <Text className="text-body-secondary font-semibold text-white">
+            Add to Cart
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </Pressable>
+  );
+}; 
