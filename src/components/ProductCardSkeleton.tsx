@@ -3,32 +3,153 @@ import { View } from 'react-native';
 
 export const ProductCardSkeleton: React.FC = () => {
   return (
-    <View className="flux-card w-full mb-comfortable">
-      <View className="w-full h-40 bg-slate-200 rounded-neural relative overflow-hidden">
-       
-        <View className="absolute inset-0 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200" />
+    <View style={{
+      backgroundColor: '#ffffff',
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: '#f1f5f9',
+      marginBottom: 16,
+      overflow: 'hidden',
+    }}>
+      <View style={{
+        width: '100%',
+        height: 160,
+        backgroundColor: '#f1f5f9',
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        position: 'relative',
+      }}>
+        <View style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'transparent',
+          background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+        }} />
       </View>
 
-      <View className="p-spacious space-y-cozy">
-        <View className="h-3 bg-slate-200 rounded-md w-16" />
+      <View style={{ padding: 16 }}>
+        <View style={{
+          height: 12,
+          backgroundColor: '#e2e8f0',
+          borderRadius: 6,
+          width: '40%',
+          marginBottom: 8,
+        }} />
         
-        <View className="space-y-tight">
-          <View className="h-4 bg-slate-200 rounded-md w-full" />
-          <View className="h-4 bg-slate-200 rounded-md w-3/4" />
+        <View style={{ marginBottom: 8 }}>
+          <View style={{
+            height: 16,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 8,
+            width: '100%',
+            marginBottom: 4,
+          }} />
+          <View style={{
+            height: 16,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 8,
+            width: '75%',
+          }} />
         </View>
 
-        <View className="flex-row items-center space-x-tight">
-          <View className="h-3 w-16 bg-slate-200 rounded-md" />
-          <View className="h-3 w-12 bg-slate-200 rounded-md" />
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginBottom: 12,
+        }}>
+          <View style={{
+            height: 12,
+            width: 80,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 6,
+            marginRight: 8,
+          }} />
+          <View style={{
+            height: 12,
+            width: 40,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 6,
+          }} />
         </View>
 
-        <View className="flex-row items-center space-x-cozy">
-          <View className="h-5 w-20 bg-slate-200 rounded-md" />
-          <View className="h-4 w-16 bg-slate-200 rounded-md" />
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginBottom: 12,
+        }}>
+          <View style={{
+            height: 20,
+            width: 80,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 10,
+            marginRight: 8,
+          }} />
+          <View style={{
+            height: 16,
+            width: 60,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 8,
+          }} />
         </View>
 
-        <View className="h-12 bg-slate-200 rounded-neural" />
+        <View style={{
+          height: 44,
+          backgroundColor: '#e2e8f0',
+          borderRadius: 12,
+          width: '100%',
+        }} />
       </View>
+    </View>
+  );
+};
+
+export const ProductCardMiniSkeleton: React.FC = () => {
+  return (
+    <View style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#f8fafc',
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      marginHorizontal: 16,
+      marginVertical: 4,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: '#e2e8f0',
+    }}>
+      <View style={{
+        width: 40,
+        height: 40,
+        backgroundColor: '#e2e8f0',
+        borderRadius: 8,
+        marginRight: 12,
+      }} />
+      
+      <View style={{ flex: 1 }}>
+        <View style={{
+          height: 12,
+          backgroundColor: '#e2e8f0',
+          borderRadius: 6,
+          width: '70%',
+          marginBottom: 4,
+        }} />
+        <View style={{
+          height: 10,
+          backgroundColor: '#e2e8f0',
+          borderRadius: 5,
+          width: '40%',
+        }} />
+      </View>
+      
+      <View style={{
+        height: 14,
+        width: 50,
+        backgroundColor: '#e2e8f0',
+        borderRadius: 7,
+      }} />
     </View>
   );
 }; 

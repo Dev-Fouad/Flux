@@ -15,6 +15,8 @@ interface ProductStore extends ProductListState {
   refreshProducts: () => void;
   
   applyFiltersAndSort: () => void;
+  getFilteredProducts: () => Product[];
+  sortProducts: (products: Product[]) => Product[];
 }
 
 const initialState: ProductListState = {
@@ -110,6 +112,10 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 
     set({ isLoadingMore: true });
 
+    // Smart loading delay - faster for first few pages, slower for later ones
+    const currentProducts = state.filteredProducts.length;
+    const loadDelay = currentProducts < 48 ? 300 : 600; // Faster loading for first 48 products
+
     setTimeout(() => {
       const state = get();
       const nextPage = state.pagination.page + 1;
@@ -128,7 +134,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
         },
         isLoadingMore: false,
       }));
-    }, 500);
+    }, loadDelay);
   },
 
   refreshProducts: () => {

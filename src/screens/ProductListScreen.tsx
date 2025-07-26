@@ -31,7 +31,7 @@ export const ProductListScreen: React.FC = () => {
     setSortBy,
   } = useProductStore();
 
-  const categories: ProductCategory[] = ['Electronics', 'Clothing', 'Home & Garden', 'Books', 'Sports'];
+  const categories: (ProductCategory | 'All')[] = ['All', 'Electronics', 'Clothing', 'Home & Garden', 'Books', 'Sports'];
   
   const [sortModalVisible, setSortModalVisible] = React.useState(false);
 
@@ -59,13 +59,18 @@ export const ProductListScreen: React.FC = () => {
     // TODO: Toggle favorite functionality
   };
 
-  const handleCategoryPress = (category: ProductCategory) => {
-    if (filters.categories.includes(category)) {
-      removeCategoryFilter(category);
+  const handleCategoryPress = (category: ProductCategory | 'All') => {
+    if (category === 'All') {
+      clearFilters();
     } else {
-      addCategoryFilter(category);
+      // Clear all categories first, then add the selected one (single selection)
+      clearFilters();
+      addCategoryFilter(category as ProductCategory);
     }
   };
+
+  // Check if "All" should be active (no filters applied)
+  const isAllActive = filters.categories.length === 0 && !searchTerm;
 
   const renderProductCard = ({ item }: { item: Product }) => (
     <View className="w-1/2 px-tight">
@@ -91,18 +96,50 @@ export const ProductListScreen: React.FC = () => {
       </View>
 
       <View className="relative mb-comfortable">
-        <View className="flex-row items-center flux-input flux-input-focus">
-          <Search size={20} className="text-void-black-500 mr-cozy" />
+        <View 
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#f8fafc',
+            borderWidth: 1,
+            borderColor: searchTerm ? '#6366f1' : '#e2e8f0',
+            borderRadius: 24,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            shadowColor: searchTerm ? '#6366f1' : '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: searchTerm ? 0.1 : 0.05,
+            shadowRadius: searchTerm ? 8 : 4,
+            elevation: searchTerm ? 3 : 1,
+          }}
+        >
+          <Search size={18} color="#64748b" style={{ marginRight: 12 }} />
           <TextInput
             placeholder="Search products..."
             value={searchTerm}
             onChangeText={setSearchTerm}
-            className="flex-1 text-body-primary text-void-black-900"
-            placeholderTextColor="#6c757d"
+            style={{
+              flex: 1,
+              fontSize: 16,
+              color: '#0f0f23',
+              fontWeight: '400',
+            }}
+            placeholderTextColor="#64748b"
           />
           {searchTerm.length > 0 && (
-            <TouchableOpacity onPress={clearSearch}>
-              <X size={20} className="text-void-black-400" />
+            <TouchableOpacity onPress={clearSearch} style={{ marginLeft: 12 }}>
+              <View 
+                style={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor: '#64748b',
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <X size={12} color="#ffffff" />
+              </View>
             </TouchableOpacity>
           )}
         </View>
@@ -114,12 +151,17 @@ export const ProductListScreen: React.FC = () => {
         </Text>
         <View className="flex-row flex-wrap gap-cozy">
           {categories.map((category) => {
-            const isActive = filters.categories.includes(category);
+            const isActive = category === 'All' ? isAllActive : filters.categories.includes(category as ProductCategory);
             return (
               <TouchableOpacity
                 key={category}
                 onPress={() => handleCategoryPress(category)}
-                className={isActive ? "flux-chip-active" : "flux-chip"}
+                style={{
+                  backgroundColor: isActive ? '#6366f1' : '#f1f5f9',
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 24,
+                }}
               >
                 <Text
                   className={`text-body-secondary font-medium ${
@@ -169,24 +211,80 @@ export const ProductListScreen: React.FC = () => {
     </View>
   );
 
-  const renderLoadMoreButton = () => {
-    if (!hasMore) return null;
+  const renderInfiniteLoader = () => {
+    if (!isLoadingMore) return null;
 
     return (
-      <View className="p-spacious">
-        <TouchableOpacity
-          onPress={loadMore}
-          disabled={isLoadingMore}
-          className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center"
-        >
-          {isLoadingMore ? (
-            <ActivityIndicator size="small" color="#ffffff" />
-          ) : (
-            <Text className="text-button-text font-semibold text-white">
-              Load More Products
-            </Text>
-          )}
-        </TouchableOpacity>
+      <View style={{
+        paddingVertical: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        {/* FLUX Neural Loading Animation */}
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: '#f8fafc',
+          paddingHorizontal: 24,
+          paddingVertical: 16,
+          borderRadius: 24,
+          shadowColor: '#6366f1',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 3,
+        }}>
+          <ActivityIndicator size="small" color="#6366f1" style={{ marginRight: 12 }} />
+          <Text style={{
+            fontSize: 14,
+            fontWeight: '500',
+            color: '#64748b',
+            letterSpacing: 0.5,
+          }}>
+            Curating your next discoveries...
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  const renderEndOfCatalog = () => {
+    if (hasMore) return null;
+
+    return (
+      <View style={{
+        paddingVertical: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        {/* FLUX End State */}
+        <View style={{
+          alignItems: 'center',
+          backgroundColor: '#f8fafc',
+          paddingHorizontal: 32,
+          paddingVertical: 24,
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: '#e2e8f0',
+        }}>
+          <Text style={{
+            fontSize: 20,
+            fontWeight: '600',
+            color: '#0f0f23',
+            marginBottom: 8,
+            textAlign: 'center',
+          }}>
+            You've explored everything! ✨
+          </Text>
+          <Text style={{
+            fontSize: 14,
+            color: '#64748b',
+            textAlign: 'center',
+            lineHeight: 20,
+          }}>
+            That's all {total} products in our catalog.{'\n'}New arrivals flow in daily!
+          </Text>
+        </View>
       </View>
     );
   };
@@ -237,7 +335,12 @@ export const ProductListScreen: React.FC = () => {
         keyExtractor={(item) => item.id}
         numColumns={2}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={renderLoadMoreButton}
+        ListFooterComponent={() => (
+          <>
+            {renderInfiniteLoader()}
+            {renderEndOfCatalog()}
+          </>
+        )}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -253,19 +356,21 @@ export const ProductListScreen: React.FC = () => {
             loadMore();
           }
         }}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.8}
         contentContainerStyle={{
           paddingBottom: 32,
         }}
         columnWrapperStyle={{
           paddingHorizontal: 12,
         }}
-        initialNumToRender={8}
-        maxToRenderPerBatch={8}
-        windowSize={11}
+        initialNumToRender={6}
+        maxToRenderPerBatch={4}
+        windowSize={10}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={50}
         getItemLayout={(_, index) => ({
-          length: 320, // estimated card height
-          offset: 320 * index,
+          length: 300, // estimated card height
+          offset: 300 * Math.floor(index / 2), // Account for 2 columns
           index,
         })}
       />
@@ -273,7 +378,7 @@ export const ProductListScreen: React.FC = () => {
         visible={sortModalVisible}
         options={sortOptions}
         selected={sortBy}
-        onSelect={setSortBy}
+        onSelect={(value) => setSortBy(value as any)}
         onClose={() => setSortModalVisible(false)}
       />
     </SafeAreaView>

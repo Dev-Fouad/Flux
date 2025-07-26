@@ -32,4 +32,8 @@
   .flux-input-focus {
     @apply border-neural-purple-500 bg-white;
   }
+  
+  .flux-search-focus {
+    @apply border-neural-purple-500 shadow-neural;
+  }
 } 

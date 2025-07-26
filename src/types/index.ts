@@ -25,6 +25,8 @@ export type ProductCategory =
   | 'Books'
   | 'Sports';
 
+export type CategoryOption = ProductCategory | 'All';
+
 export interface FilterState {
   categories: ProductCategory[];
   priceRange: {

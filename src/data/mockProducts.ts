@@ -111,9 +111,9 @@ export const mockProducts: Product[] = [
     id: '6',
     name: 'Designer Denim Jacket',
     price: 35000,
-    image: 'https://images.unsplash.com/photo-1544966503-7cc4ac882d2d?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
     images: [
-      'https://images.unsplash.com/photo-1544966503-7cc4ac882d2d?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=600&fit=crop',
     ],
     category: 'Clothing',
     rating: 4.6,
@@ -235,9 +235,9 @@ export const mockProducts: Product[] = [
     id: '12',
     name: 'Yoga Mat Pro',
     price: 12000,
-    image: 'https://images.unsplash.com/photo-1506629905607-0e51de1eb83f?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1592432678016-e910d3a98ba7?w=400&h=400&fit=crop',
     images: [
-      'https://images.unsplash.com/photo-1506629905607-0e51de1eb83f?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1592432678016-e910d3a98ba7?w=800&h=600&fit=crop',
     ],
     category: 'Sports',
     rating: 4.6,
