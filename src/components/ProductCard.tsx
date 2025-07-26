@@ -39,7 +39,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
   return (
     <Pressable
       onPress={onPress}
-      className="flux-card w-full mb-comfortable active:scale-[0.98] transition-transform duration-150"
+      className="flux-card w-full mb-comfortable"
     >
       {/* Image Container */}
       <View className="relative">
@@ -121,7 +121,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
         {/* Add to Cart Button */}
         <TouchableOpacity
           onPress={onAddToCart}
-          className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center gap-cozy active:scale-[0.98] transition-transform duration-150"
+          className="bg-neural-flow rounded-neural py-comfortable px-spacious flex-row items-center justify-center gap-cozy"
           activeOpacity={0.9}
         >
           <ShoppingCart size={16} className="text-white" />
