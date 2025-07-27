@@ -334,16 +334,29 @@ export const mockProducts: Product[] = [
   },
 ];
 
-export const categories: Array<{ label: string; value: string; count: number }> = [
-  { label: 'Electronics', value: 'Electronics', count: 5 },
-  { label: 'Clothing', value: 'Clothing', count: 3 },
-  { label: 'Home & Garden', value: 'Home & Garden', count: 3 },
-  { label: 'Books', value: 'Books', count: 2 },
-  { label: 'Sports', value: 'Sports', count: 3 },
-];
+// Product categories - single source of truth
+export const PRODUCT_CATEGORIES = [
+  'All', 
+  'Electronics', 
+  'Clothing', 
+  'Home & Garden', 
+  'Books', 
+  'Sports'
+] as const;
 
-export const priceRanges = {
+// Sort options
+export const SORT_OPTIONS = [
+  { label: 'Newest First', value: 'newest-first' },
+  { label: 'Price: Low to High', value: 'price-low-high' },
+  { label: 'Price: High to Low', value: 'price-high-low' },
+  { label: 'Name: A-Z', value: 'name-a-z' },
+  { label: 'Name: Z-A', value: 'name-z-a' },
+  { label: 'Highest Rated', value: 'rating-high-low' },
+] as const;
+
+// Price ranges
+export const PRICE_RANGES = {
   min: 0,
   max: 500000,
   step: 5000,
-}; 
+} as const; 
