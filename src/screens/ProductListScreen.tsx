@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Search, Filter, ChevronDown, X } from 'lucide-react-native';
 import { ProductCard } from '../components/ProductCard';
+import { ProductCardSkeleton } from '../components/ProductCardSkeleton';
 import { useProducts } from '../hooks/useProducts';
 import { useSearch } from '../hooks/useSearch';
 import { useProductStore } from '../store/productStore';
@@ -44,20 +45,20 @@ export const ProductListScreen: React.FC = () => {
     { label: 'Highest Rated', value: 'rating-high-low' },
   ];
 
-  const handleProductPress = (product: Product) => {
+  const handleProductPress = useCallback((product: Product) => {
     console.log('Product pressed:', product.name);
     // TODO: Navigate to product detail
-  };
+  }, []);
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = useCallback((product: Product) => {
     console.log('Add to cart:', product.name);
     // TODO: Add to cart functionality
-  };
+  }, []);
 
-  const handleToggleFavorite = (product: Product) => {
+  const handleToggleFavorite = useCallback((product: Product) => {
     console.log('Toggle favorite:', product.name);
     // TODO: Toggle favorite functionality
-  };
+  }, []);
 
   const handleCategoryPress = (category: ProductCategory | 'All') => {
     if (category === 'All') {
@@ -72,7 +73,7 @@ export const ProductListScreen: React.FC = () => {
   // Check if "All" should be active (no filters applied)
   const isAllActive = filters.categories.length === 0 && !searchTerm;
 
-  const renderProductCard = ({ item }: { item: Product }) => (
+  const renderProductCard = useCallback(({ item }: { item: Product }) => (
     <View className="w-1/2 px-tight">
       <ProductCard
         product={item}
@@ -82,7 +83,7 @@ export const ProductListScreen: React.FC = () => {
         isFavorite={false} // TODO: Get from favorites hook
       />
     </View>
-  );
+  ), [handleProductPress, handleAddToCart, handleToggleFavorite]);
 
   const renderHeader = () => (
     <View className="px-spacious py-generous">
@@ -215,34 +216,18 @@ export const ProductListScreen: React.FC = () => {
     if (!isLoadingMore) return null;
 
     return (
-      <View style={{
-        paddingVertical: 32,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-        {/* FLUX Neural Loading Animation */}
+      <View style={{ paddingVertical: 16 }}>
+        {/* Show skeleton cards for the products being loaded */}
         <View style={{
           flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: '#f8fafc',
-          paddingHorizontal: 24,
-          paddingVertical: 16,
-          borderRadius: 24,
-          shadowColor: '#6366f1',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 3,
+          flexWrap: 'wrap',
+          paddingHorizontal: 12,
         }}>
-          <ActivityIndicator size="small" color="#6366f1" style={{ marginRight: 12 }} />
-          <Text style={{
-            fontSize: 14,
-            fontWeight: '500',
-            color: '#64748b',
-            letterSpacing: 0.5,
-          }}>
-            Curating your next discoveries...
-          </Text>
+          {[1, 2, 3, 4].map((_, index) => (
+            <View key={index} style={{ width: '50%', paddingHorizontal: 4 }}>
+              <ProductCardSkeleton />
+            </View>
+          ))}
         </View>
       </View>
     );
@@ -363,16 +348,17 @@ export const ProductListScreen: React.FC = () => {
         columnWrapperStyle={{
           paddingHorizontal: 12,
         }}
-        initialNumToRender={6}
-        maxToRenderPerBatch={4}
-        windowSize={10}
+        initialNumToRender={4}
+        maxToRenderPerBatch={2}
+        windowSize={5}
         removeClippedSubviews={true}
-        updateCellsBatchingPeriod={50}
+        updateCellsBatchingPeriod={100}
         getItemLayout={(_, index) => ({
-          length: 300, // estimated card height
-          offset: 300 * Math.floor(index / 2), // Account for 2 columns
+          length: 280, // estimated card height - more accurate
+          offset: 280 * Math.floor(index / 2), // Account for 2 columns
           index,
         })}
+        disableVirtualization={false}
       />
       <SortModal
         visible={sortModalVisible}

@@ -8,25 +8,41 @@ export const ProductCardSkeleton: React.FC = () => {
       borderRadius: 16,
       borderWidth: 1,
       borderColor: '#f1f5f9',
+      width: '100%',
       marginBottom: 16,
       overflow: 'hidden',
     }}>
-      <View style={{
-        width: '100%',
-        height: 160,
-        backgroundColor: '#f1f5f9',
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        position: 'relative',
-      }}>
+      <View style={{ position: 'relative' }}>
+        <View style={{
+          width: '100%',
+          height: 160,
+          borderTopLeftRadius: 12,
+          borderTopRightRadius: 12,
+          backgroundColor: '#e2e8f0',
+        }} />
+        
         <View style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'transparent',
-          background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+          top: 8,
+          left: 8,
+          flexDirection: 'row',
+        }}>
+          <View style={{
+            width: 32,
+            height: 20,
+            backgroundColor: '#cbd5e1',
+            borderRadius: 4,
+          }} />
+        </View>
+        
+        <View style={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          width: 32,
+          height: 32,
+          backgroundColor: '#cbd5e1',
+          borderRadius: 16,
         }} />
       </View>
 
@@ -36,7 +52,7 @@ export const ProductCardSkeleton: React.FC = () => {
           backgroundColor: '#e2e8f0',
           borderRadius: 6,
           width: '40%',
-          marginBottom: 8,
+          marginBottom: 4,
         }} />
         
         <View style={{ marginBottom: 8 }}>
@@ -61,15 +77,47 @@ export const ProductCardSkeleton: React.FC = () => {
           marginBottom: 12,
         }}>
           <View style={{
-            height: 12,
-            width: 80,
-            backgroundColor: '#e2e8f0',
-            borderRadius: 6,
+            flexDirection: 'row',
             marginRight: 8,
-          }} />
+          }}>
+            <View style={{
+              width: 12,
+              height: 12,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 6,
+              marginRight: 2,
+            }} />
+            <View style={{
+              width: 12,
+              height: 12,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 6,
+              marginRight: 2,
+            }} />
+            <View style={{
+              width: 12,
+              height: 12,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 6,
+              marginRight: 2,
+            }} />
+            <View style={{
+              width: 12,
+              height: 12,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 6,
+              marginRight: 2,
+            }} />
+            <View style={{
+              width: 12,
+              height: 12,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 6,
+            }} />
+          </View>
           <View style={{
             height: 12,
-            width: 40,
+            width: 60,
             backgroundColor: '#e2e8f0',
             borderRadius: 6,
           }} />
@@ -78,21 +126,27 @@ export const ProductCardSkeleton: React.FC = () => {
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'space-between',
           marginBottom: 12,
         }}>
           <View style={{
-            height: 20,
-            width: 80,
-            backgroundColor: '#e2e8f0',
-            borderRadius: 10,
-            marginRight: 8,
-          }} />
-          <View style={{
-            height: 16,
-            width: 60,
-            backgroundColor: '#e2e8f0',
-            borderRadius: 8,
-          }} />
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+            <View style={{
+              height: 18,
+              width: 80,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 9,
+              marginRight: 8,
+            }} />
+            <View style={{
+              height: 14,
+              width: 60,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 7,
+            }} />
+          </View>
         </View>
 
         <View style={{
@@ -100,7 +154,24 @@ export const ProductCardSkeleton: React.FC = () => {
           backgroundColor: '#e2e8f0',
           borderRadius: 12,
           width: '100%',
-        }} />
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <View style={{
+            width: 16,
+            height: 16,
+            backgroundColor: '#cbd5e1',
+            borderRadius: 8,
+            marginRight: 8,
+          }} />
+          <View style={{
+            width: 80,
+            height: 14,
+            backgroundColor: '#cbd5e1',
+            borderRadius: 7,
+          }} />
+        </View>
       </View>
     </View>
   );

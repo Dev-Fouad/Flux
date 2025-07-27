@@ -18,7 +18,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
   onToggleFavorite,
   isFavorite = false,
 }) => {
-  const [imageLoading, setImageLoading] = useState(true);
+
   const formatPrice = (price: number) => `₦${price.toLocaleString()}`;
   const renderStars = (rating: number) => {
     const stars = [];
@@ -47,14 +47,7 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           source={{ uri: product.image }}
           className="w-full h-40 rounded-neural bg-slate-200"
           resizeMode="cover"
-          onLoadStart={() => setImageLoading(true)}
-          onLoadEnd={() => setImageLoading(false)}
         />
-        {imageLoading && (
-          <View className="absolute inset-0 items-center justify-center flex-row">
-            <ActivityIndicator size="small" color="#6366f1" />
-          </View>
-        )}
         {/* Badges */}
         <View className="absolute top-cozy left-cozy flex-row gap-tight">
           {product.isNew && (
@@ -134,4 +127,13 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
   );
 };
 
-export const ProductCard = React.memo(ProductCardComponent); 
+export const ProductCard = React.memo(ProductCardComponent, (prevProps, nextProps) => {
+ 
+  return (
+    prevProps.product.id === nextProps.product.id &&
+    prevProps.isFavorite === nextProps.isFavorite &&
+    prevProps.onPress === nextProps.onPress &&
+    prevProps.onAddToCart === nextProps.onAddToCart &&
+    prevProps.onToggleFavorite === nextProps.onToggleFavorite
+  );
+}); 
