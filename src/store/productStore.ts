@@ -21,7 +21,7 @@ interface ProductStore extends ProductListState {
 
 const initialState: ProductListState = {
   products: mockProducts,
-  filteredProducts: mockProducts.slice(0, 4), // Initial 4 products only
+  filteredProducts: mockProducts.slice(0, 12), // Initial 12 products for better performance
   filters: {
     categories: [],
     priceRange: { min: 0, max: 500000 },
@@ -30,9 +30,9 @@ const initialState: ProductListState = {
   sortBy: 'newest-first',
   pagination: {
     page: 1,
-    limit: 4, // Load only 4 products per page
+    limit: 12, // Load 12 products per page for optimal performance
     total: mockProducts.length,
-    hasMore: mockProducts.length > 4,
+    hasMore: mockProducts.length > 12,
   },
   isLoading: false,
   isLoadingMore: false,
@@ -111,7 +111,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     if (!state.pagination.hasMore || state.isLoadingMore) return;
 
     set({ isLoadingMore: true });
-    const loadDelay = 2000; // 2 seconds so you can see the loading animation
+    const loadDelay = 2000; // Visible loading for skeleton demonstration
     setTimeout(() => {
       const state = get();
       const nextPage = state.pagination.page + 1;

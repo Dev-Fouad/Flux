@@ -10,15 +10,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Search, Filter, ChevronDown, X } from 'lucide-react-native';
-import { ProductCard } from '../components/ProductCard';
-import { ProductCardSkeleton } from '../components/ProductCardSkeleton';
+import { ProductCard } from '../components/product/ProductCard';
+import { ProductCardSkeleton } from '../components/skeletons/ProductCardSkeleton';
 import { useProducts } from '../hooks/useProducts';
 import { useSearch } from '../hooks/useSearch';
 import { useProductStore } from '../store/productStore';
 import { Product, ProductCategory } from '../types';
 import { SortModal, SortOption } from '../components/SortModal';
 
-export const ProductListScreen: React.FC = () => {
+const ProductListScreenComponent: React.FC = () => {
   const { products, total, isLoading, isLoadingMore, hasMore, loadMore, refresh } = useProducts();
   const { searchTerm, setSearchTerm, clearSearch } = useSearch();
   
@@ -45,6 +45,7 @@ export const ProductListScreen: React.FC = () => {
     { label: 'Highest Rated', value: 'rating-high-low' },
   ];
 
+  // Stable handler functions to prevent unnecessary re-renders
   const handleProductPress = useCallback((product: Product) => {
     console.log('Product pressed:', product.name);
     // TODO: Navigate to product detail
@@ -60,6 +61,13 @@ export const ProductListScreen: React.FC = () => {
     // TODO: Toggle favorite functionality
   }, []);
 
+  // Stable load more handler
+  const handleLoadMore = useCallback(() => {
+    if (!isLoadingMore && hasMore) {
+      loadMore();
+    }
+  }, [isLoadingMore, hasMore, loadMore]);
+
   const handleCategoryPress = (category: ProductCategory | 'All') => {
     if (category === 'All') {
       clearFilters();
@@ -73,8 +81,14 @@ export const ProductListScreen: React.FC = () => {
   // Check if "All" should be active (no filters applied)
   const isAllActive = filters.categories.length === 0 && !searchTerm;
 
+  // Optimized render item with memoized wrapper style and stable handlers
+  const cardWrapperStyle = React.useMemo(() => ({
+    width: '50%' as const,
+    paddingHorizontal: 4
+  }), []);
+
   const renderProductCard = useCallback(({ item }: { item: Product }) => (
-    <View className="w-1/2 px-tight">
+    <View style={cardWrapperStyle}>
       <ProductCard
         product={item}
         onPress={() => handleProductPress(item)}
@@ -83,7 +97,36 @@ export const ProductListScreen: React.FC = () => {
         isFavorite={false} // TODO: Get from favorites hook
       />
     </View>
-  ), [handleProductPress, handleAddToCart, handleToggleFavorite]);
+  ), [cardWrapperStyle, handleProductPress, handleAddToCart, handleToggleFavorite]);
+
+  // Optimized key extractor for better performance
+  const keyExtractor = useCallback((item: Product) => item.id, []);
+
+  // Optimize getItemLayout for better scrolling performance
+  const getItemLayout = useCallback((data: any, index: number) => ({
+    length: 280, // Approximate card height
+    offset: 280 * Math.floor(index / 2), // Account for 2 columns
+    index,
+  }), []);
+
+  // Memoized styles for FlatList to prevent re-creation
+  const contentContainerStyle = React.useMemo(() => ({
+    paddingBottom: 32,
+  }), []);
+
+  const columnWrapperStyle = React.useMemo(() => ({
+    paddingHorizontal: 12,
+  }), []);
+
+  // Memoized header to prevent unnecessary re-renders - reduced dependencies
+  const memoizedHeader = useCallback(() => renderHeader(), [
+    searchTerm,
+    filters.categories.length, // Only track length, not full array
+    sortBy,
+    products.length,
+    total,
+    isAllActive
+  ]);
 
   const renderHeader = () => (
     <View className="px-spacious py-generous">
@@ -302,11 +345,100 @@ export const ProductListScreen: React.FC = () => {
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-slate-50">
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6366f1" />
-          <Text className="text-body-primary text-void-black-500 mt-comfortable">
-            Loading products...
-          </Text>
+        {/* Show header with skeleton content during initial load */}
+        <View style={{ paddingHorizontal: 24, paddingVertical: 32 }}>
+          <View style={{ marginBottom: 32 }}>
+            <Text style={{ 
+              fontSize: 32, 
+              fontWeight: '700', 
+              color: '#0f0f23', 
+              marginBottom: 8 
+            }}>
+              FLUX
+            </Text>
+            <Text style={{ 
+              fontSize: 14, 
+              color: '#64748b' 
+            }}>
+              Where Shopping Flows
+            </Text>
+          </View>
+
+          {/* Search bar skeleton */}
+          <View style={{ marginBottom: 24 }}>
+            <View 
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#f8fafc',
+                borderWidth: 1,
+                borderColor: '#e2e8f0',
+                borderRadius: 24,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                opacity: 0.7,
+              }}
+            >
+              <Search size={18} color="#cbd5e1" style={{ marginRight: 12 }} />
+              <View style={{
+                height: 16,
+                flex: 1,
+                backgroundColor: '#e2e8f0',
+                borderRadius: 8,
+              }} />
+            </View>
+          </View>
+
+          {/* Category filter skeletons */}
+          <View style={{ marginBottom: 24 }}>
+            <View style={{
+              height: 14,
+              width: 80,
+              backgroundColor: '#e2e8f0',
+              borderRadius: 7,
+              marginBottom: 12,
+            }} />
+            <View style={{ 
+              flexDirection: 'row', 
+              flexWrap: 'wrap', 
+              gap: 12 
+            }}>
+              {[60, 80, 70, 90, 50].map((width, index) => (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor: '#e2e8f0',
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderRadius: 24,
+                    width: width,
+                    height: 32,
+                  }}
+                />
+              ))}
+            </View>
+          </View>
+
+          <View style={{
+            height: 14,
+            width: 150,
+            backgroundColor: '#e2e8f0',
+            borderRadius: 7,
+            marginBottom: 16,
+          }} />
+        </View>
+
+        {/* Product grid skeleton */}
+        <View style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          paddingHorizontal: 12,
+        }}>
+          {[1, 2, 3, 4, 5, 6].map((_, index) => (
+            <View key={index} style={{ width: '50%', paddingHorizontal: 4 }}>
+              <ProductCardSkeleton />
+            </View>
+          ))}
         </View>
       </SafeAreaView>
     );
@@ -317,9 +449,9 @@ export const ProductListScreen: React.FC = () => {
       <FlatList
         data={products}
         renderItem={renderProductCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         numColumns={2}
-        ListHeaderComponent={renderHeader}
+        ListHeaderComponent={memoizedHeader}
         ListFooterComponent={() => (
           <>
             {renderInfiniteLoader()}
@@ -336,29 +468,20 @@ export const ProductListScreen: React.FC = () => {
             tintColor="#6366f1"
           />
         }
-        onEndReached={() => {
-          if (!isLoadingMore && hasMore) {
-            loadMore();
-          }
-        }}
-        onEndReachedThreshold={0.8}
-        contentContainerStyle={{
-          paddingBottom: 32,
-        }}
-        columnWrapperStyle={{
-          paddingHorizontal: 12,
-        }}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.3}
+        contentContainerStyle={contentContainerStyle}
+        columnWrapperStyle={columnWrapperStyle}
+        // Aggressive performance settings for maximum scrolling performance
         initialNumToRender={4}
         maxToRenderPerBatch={2}
         windowSize={5}
         removeClippedSubviews={true}
         updateCellsBatchingPeriod={100}
-        getItemLayout={(_, index) => ({
-          length: 280, // estimated card height - more accurate
-          offset: 280 * Math.floor(index / 2), // Account for 2 columns
-          index,
-        })}
+        getItemLayout={getItemLayout}
         disableVirtualization={false}
+        // Maximum scrolling performance
+        scrollEventThrottle={32}
       />
       <SortModal
         visible={sortModalVisible}
@@ -369,4 +492,7 @@ export const ProductListScreen: React.FC = () => {
       />
     </SafeAreaView>
   );
-}; 
+};
+
+// Memoize the entire screen to prevent unnecessary re-renders
+export const ProductListScreen = React.memo(ProductListScreenComponent); 

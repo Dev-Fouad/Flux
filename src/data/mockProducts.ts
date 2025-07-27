@@ -235,7 +235,7 @@ export const mockProducts: Product[] = [
     id: '12',
     name: 'Yoga Mat Pro',
     price: 12000,
-    image: 'https://images.unsplash.com/photo-1592432678016-e910d3a98ba7?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop',
     images: [
       'https://images.unsplash.com/photo-1592432678016-e910d3a98ba7?w=800&h=600&fit=crop',
     ],
