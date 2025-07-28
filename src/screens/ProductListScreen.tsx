@@ -26,7 +26,6 @@ const ProductListScreenComponent: React.FC = () => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleProductPress = useCallback((product: Product) => {
-    console.log('Product selected:', product.name);
     // TODO: Navigate to product detail
   }, []);
 

@@ -61,22 +61,3 @@ export const ProductCardSkeleton = () => {
     </View>
   );
 };
-
-// export const ProductCardMiniSkeleton = () => {
-//   return (
-//     <View className="flex-row items-center bg-void-black-50 px-generous py-comfortable mx-spacious my-tight rounded-neural border border-void-black-100">
-//       {/* Mini product image skeleton */}
-//       <ShimmerView className="bg-void-black-100 w-10 h-10 rounded-lg mr-comfortable" />
-
-//       <View className="flex-1">
-//         {/* Product name skeleton */}
-//         <ShimmerView className="bg-void-black-100 h-3 rounded-md w-3/5 mb-tight" />
-//         {/* Brand/category skeleton */}
-//         <ShimmerView className="bg-void-black-100 h-2.5 rounded w-2/5" />
-//       </View>
-
-//       {/* Price skeleton */}
-//       <ShimmerView className="bg-void-black-100 h-3.5 w-12 rounded-md" />
-//     </View>
-//   );
-// };
