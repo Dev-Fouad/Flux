@@ -4,7 +4,7 @@ export const mockProducts: Product[] = [
   // Electronics
   {
     id: '1',
-    name: 'Neural Wireless Headphones Pro',
+    name: 'Neural Wireless Pro',
     price: 45000,
     originalPrice: 55000,
     discount: 18,
@@ -26,7 +26,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: '2',
-    name: 'Smart Watch Pro Ultra',
+    name: 'Smart Watch Ultra',
     price: 89000,
     originalPrice: 120000,
     discount: 26,
@@ -275,7 +275,7 @@ export const mockProducts: Product[] = [
   // Additional products for variety
   {
     id: '14',
-    name: 'Mechanical Gaming Keyboard',
+    name: 'Mechanical Gaming',
     price: 38000,
     image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=400&fit=crop',
     images: [

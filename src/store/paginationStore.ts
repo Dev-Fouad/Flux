@@ -17,7 +17,7 @@ interface PaginationStore {
 
 export const usePaginationStore = create<PaginationStore>((set, get) => ({
   currentPage: 1,
-  itemsPerPage: 6, // Better balance - more content while showing pagination
+  itemsPerPage: 6,
   isLoadingPage: false,
 
   setCurrentPage: (page) => set({ currentPage: page }),

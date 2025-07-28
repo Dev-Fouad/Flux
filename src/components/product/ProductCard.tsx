@@ -88,14 +88,12 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           {product.brand}
         </Text>
         
-        <View className="h-12 mb-cozy justify-start">
-          <Text 
-            className="text-body-primary font-semibold text-void-black-900 leading-6"
-            numberOfLines={2}
-          >
-            {product.name}
-          </Text>
-        </View>
+        <Text 
+          className="text-body-primary font-semibold text-void-black-900 mb-cozy leading-6"
+          numberOfLines={2}
+        >
+          {product.name}
+        </Text>
         
         <View className="flex-row items-center mb-comfortable">
           <View className="flex-row mr-tight">

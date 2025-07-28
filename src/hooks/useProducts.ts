@@ -2,7 +2,6 @@ import React from 'react';
 import { useProductStore } from '../store/productStore';
 import { usePaginationStore } from '../store/paginationStore';
 
-// Professional e-commerce hook with pagination
 export const useProducts = () => {
   const store = useProductStore();
   const { currentPage, itemsPerPage, reset } = usePaginationStore();
@@ -46,10 +45,8 @@ export const useProducts = () => {
     startIndex: paginatedData.startIndex,
     endIndex: paginatedData.endIndex,
     
-    // Loading states
     isLoading: store.isLoading,
     
-    // Actions
     refresh: store.refreshProducts,
   };
 }; 
