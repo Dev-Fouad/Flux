@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { ProductCard } from './ProductCard';
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
-import { ProductListHeader } from './ProductListHeader';
+import ProductListHeader from './ProductListHeader';
 import { FilterControls } from './FilterControls';
 import { FluxPagination } from '../pagination/FluxPagination';
 import { EmptyState } from './EmptyState';

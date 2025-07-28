@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
 import { Search, X } from 'lucide-react-native';
 import { ProductCategory } from '../../types';
 import { PRODUCT_CATEGORIES } from '../../constants/mockProducts';
+import { useDebounce } from '../../hooks/useDebounce';
 
 interface ProductListHeaderProps {
   searchTerm: string;
@@ -18,14 +19,58 @@ interface ProductListHeaderProps {
   isAllActive: boolean;
 }
 
-export const ProductListHeader: React.FC<ProductListHeaderProps> = ({
-  searchTerm,
+const ProductListHeader: React.FC<ProductListHeaderProps> = ({
+  searchTerm: initialSearchTerm,
   onSearchChange,
   onSearchClear,
   selectedCategories,
   onCategoryPress,
   isAllActive,
 }) => {
+  const [localSearchTerm, setLocalSearchTerm] = useState(initialSearchTerm);
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+  const debouncedSearchTerm = useDebounce(localSearchTerm, 300);
+
+  useEffect(() => {
+    if (debouncedSearchTerm !== initialSearchTerm) {
+      onSearchChange(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, onSearchChange]);
+
+  useEffect(() => {
+    if (initialSearchTerm === '' && localSearchTerm !== '') {
+      setLocalSearchTerm('');
+    }
+  }, [initialSearchTerm]);
+
+  useEffect(() => {
+    setLocalSearchTerm(initialSearchTerm);
+  }, []); 
+
+  const handleTextChange = useCallback((text: string) => {
+    setLocalSearchTerm(text);
+  }, []);
+
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+    if (localSearchTerm !== initialSearchTerm) {
+      onSearchChange(localSearchTerm);
+    }
+  }, [localSearchTerm, initialSearchTerm, onSearchChange]);
+
+  const handleClear = useCallback(() => {
+    setLocalSearchTerm('');
+    setIsFocused(false);
+    onSearchClear();
+  }, [onSearchClear]);
+  
+  const hasFocus = isFocused || !!localSearchTerm;
+
   return (
     <View className="px-spacious py-generous">
       <View className="mb-generous">
@@ -44,32 +89,45 @@ export const ProductListHeader: React.FC<ProductListHeaderProps> = ({
             alignItems: 'center',
             backgroundColor: '#f8fafc',
             borderWidth: 1,
-            borderColor: searchTerm ? '#6366f1' : '#e2e8f0',
+            borderColor: hasFocus ? '#6366f1' : '#e2e8f0',
             borderRadius: 24,
             paddingHorizontal: 16,
-            paddingVertical: 8,
-            shadowColor: searchTerm ? '#6366f1' : '#000',
+            paddingVertical: 12,
+            shadowColor: hasFocus ? '#6366f1' : '#000',
             shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: searchTerm ? 0.1 : 0.05,
-            shadowRadius: searchTerm ? 8 : 4,
-            elevation: searchTerm ? 3 : 1,
+            shadowOpacity: hasFocus ? 0.1 : 0.05,
+            shadowRadius: hasFocus ? 8 : 4,
+            elevation: hasFocus ? 3 : 1,
           }}
         >
           <Search size={18} color="#64748b" style={{ marginRight: 12 }} />
           <TextInput
+            ref={inputRef}
+            key="flux-search-input"
             placeholder="Search products..."
-            value={searchTerm}
-            onChangeText={onSearchChange}
+            value={localSearchTerm}
+            onChangeText={handleTextChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             style={{
               flex: 1,
               fontSize: 16,
               color: '#0f0f23',
               fontWeight: '400',
+              paddingVertical: 0,
             }}
             placeholderTextColor="#64748b"
+            blurOnSubmit={false}
+            autoCorrect={false}
+            autoCapitalize="none"
+            clearButtonMode="never"
+            keyboardType="default"
+            returnKeyType="search"
+            enablesReturnKeyAutomatically={false}
+            caretHidden={false}
           />
-          {searchTerm.length > 0 && (
-            <TouchableOpacity onPress={onSearchClear} style={{ marginLeft: 12 }}>
+          {localSearchTerm.length > 0 && (
+            <TouchableOpacity onPress={handleClear} style={{ marginLeft: 12 }}>
               <View 
                 style={{
                   width: 20,
@@ -119,4 +177,12 @@ export const ProductListHeader: React.FC<ProductListHeaderProps> = ({
       </View>
     </View>
   );
-}; 
+};
+
+export default React.memo(ProductListHeader, (prevProps, nextProps) => {
+  const categoriesChanged = JSON.stringify(prevProps.selectedCategories) !== JSON.stringify(nextProps.selectedCategories);
+  const searchChanged = prevProps.searchTerm !== nextProps.searchTerm;
+  const isAllActiveChanged = prevProps.isAllActive !== nextProps.isAllActive;
+  
+  return !categoriesChanged && !searchChanged && !isAllActiveChanged;
+});

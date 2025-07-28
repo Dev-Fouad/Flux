@@ -10,9 +10,7 @@ import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 export const ProductListLoadingScreen: React.FC = () => {
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
-      {/* Header Skeleton */}
       <View style={{ paddingHorizontal: 24, paddingVertical: 32 }}>
-        {/* Branding */}
         <View style={{ marginBottom: 32 }}>
           <Text style={{ 
             fontSize: 32, 
@@ -30,7 +28,6 @@ export const ProductListLoadingScreen: React.FC = () => {
           </Text>
         </View>
 
-        {/* Search bar skeleton */}
         <View style={{ marginBottom: 24 }}>
           <View 
             style={{
@@ -55,7 +52,6 @@ export const ProductListLoadingScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Category filter skeletons */}
         <View style={{ marginBottom: 24 }}>
           <View style={{
             height: 14,
@@ -85,7 +81,6 @@ export const ProductListLoadingScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Filter controls skeleton */}
         <View style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -100,7 +95,6 @@ export const ProductListLoadingScreen: React.FC = () => {
           }} />
         </View>
 
-        {/* Products counter skeleton */}
         <View style={{
           height: 14,
           width: 150,
@@ -110,7 +104,6 @@ export const ProductListLoadingScreen: React.FC = () => {
         }} />
       </View>
 
-      {/* Product grid skeleton */}
       <View style={{
         flexDirection: 'row',
         flexWrap: 'wrap',
