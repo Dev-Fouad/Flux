@@ -48,6 +48,7 @@ interface ProductListLayoutProps {
   onProductPress: (product: Product) => void;
   onAddToCart: (product: Product) => void;
   onToggleFavorite: (product: Product) => void;
+  isFavorite: (productId: string) => boolean;
   
   // Sort modal
   sortModalVisible: boolean;
@@ -78,6 +79,7 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
   onProductPress,
   onAddToCart,
   onToggleFavorite,
+  isFavorite,
   sortModalVisible,
   onSortSelect,
   onSortModalClose,
@@ -124,7 +126,7 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
           onPress={() => onProductPress(product)}
           onAddToCart={() => onAddToCart(product)}
           onToggleFavorite={() => onToggleFavorite(product)}
-          isFavorite={false} // TODO: Get from favorites hook
+          isFavorite={isFavorite(product.id)}
         />
       </View>
     );

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { ProductListLayout } from '../components/product/ProductListLayout';
 import { ProductListLoadingScreen } from '../components/product/ProductListLoadingScreen';
 import { Toast } from '../components/ui/Toast';
-import { useProducts, useSearch, useFilters, useSort, useToast } from '../hooks';
+import { useProducts, useSearch, useFilters, useSort, useToast, useFavorites } from '../hooks';
 import { Product } from '../types';
 
 const ProductListScreenComponent: React.FC = () => {
@@ -24,6 +24,7 @@ const ProductListScreenComponent: React.FC = () => {
   const { selectedCategories, handleCategoryPress, handleClearAllFilters, isAllActive } = useFilters();
   const { sortBy, sortModalVisible, handleSortPress, handleSortSelect, handleSortModalClose } = useSort();
   const { toast, showSuccess, hideToast } = useToast();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   // Product interaction handlers
   const handleProductPress = useCallback((product: Product) => {
@@ -41,9 +42,8 @@ const ProductListScreenComponent: React.FC = () => {
   }, [showSuccess]);
 
   const handleToggleFavorite = useCallback((product: Product) => {
-    console.log('Toggled favorite:', product.name);
-    // TODO: Toggle favorite functionality
-  }, []);
+    toggleFavorite(product);
+  }, [toggleFavorite]);
 
   // Show loading screen during initial load
   if (isLoading) {
@@ -85,6 +85,7 @@ const ProductListScreenComponent: React.FC = () => {
         onProductPress={handleProductPress}
         onAddToCart={handleAddToCart}
         onToggleFavorite={handleToggleFavorite}
+        isFavorite={isFavorite}
         
         // Sort modal
         sortModalVisible={sortModalVisible}
