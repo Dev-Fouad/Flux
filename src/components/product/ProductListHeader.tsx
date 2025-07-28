@@ -28,7 +28,6 @@ export const ProductListHeader: React.FC<ProductListHeaderProps> = ({
 }) => {
   return (
     <View className="px-spacious py-generous">
-      {/* Branding Section */}
       <View className="mb-generous">
         <Text className="text-display-major font-bold text-void-black-900 mb-tight">
           FLUX

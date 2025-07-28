@@ -28,17 +28,6 @@ export const FluxPagination: React.FC<FluxPaginationProps> = ({
     prevPage 
   } = usePaginationStore();
 
-  // Debug logging
-  React.useEffect(() => {
-    console.log('🔍 Pagination Debug:', {
-      currentPage,
-      totalPages,
-      hasNextPage,
-      hasPrevPage,
-      isLoadingPage
-    });
-  }, [currentPage, totalPages, hasNextPage, hasPrevPage, isLoadingPage]);
-
   if (!totalPages || totalPages <= 1) return null;
 
   const handleNextPress = () => {

@@ -5,6 +5,3 @@ export { useProducts } from './useProducts';
 export { useSearch } from './useSearch';
 export { useFilters } from './useFilters';
 export { useSort } from './useSort';
-
-// API Query hooks
-export * from './api'; 

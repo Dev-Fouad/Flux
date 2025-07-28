@@ -34,7 +34,6 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
 
   return (
     <View className="px-spacious">
-      {/* Filter Controls Row */}
       <View className="flex-row items-center justify-between mb-comfortable">
         <View className="flex-1">
           {hasActiveFilters && (
@@ -64,7 +63,6 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Products Counter */}
       <Text className="text-body-secondary text-void-black-500 mb-comfortable">
         Showing {displayedProducts} of {totalProducts} products
       </Text>
