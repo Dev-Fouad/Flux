@@ -168,7 +168,7 @@ export const mockProducts: Product[] = [
   // Additional products for variety
   {
     id: '13',
-    name: 'Mechanical Gaming Keyboard',
+    name: 'Mechanical Gaming',
     price: 38000,
     image: 'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=400&fit=crop',
     category: 'Electronics',

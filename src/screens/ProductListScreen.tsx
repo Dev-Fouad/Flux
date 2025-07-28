@@ -6,7 +6,6 @@ import { useProducts, useSearch, useFilters, useSort, useToast, useFavorites } f
 import { Product } from '../types';
 
 const ProductListScreenComponent: React.FC = () => {
-  // Professional e-commerce pagination data
   const { 
     products, 
     totalCount,
@@ -26,7 +25,6 @@ const ProductListScreenComponent: React.FC = () => {
   const { toast, showSuccess, hideToast } = useToast();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  // Product interaction handlers
   const handleProductPress = useCallback((product: Product) => {
     console.log('Product selected:', product.name);
     // TODO: Navigate to product detail
@@ -35,7 +33,6 @@ const ProductListScreenComponent: React.FC = () => {
   const handleAddToCart = useCallback((product: Product) => {
     console.log('Added to cart:', product.name);
     
-    // Show delightful toast notification
     showSuccess(`${product.name} added to cart! 🛒`);
     
     // TODO: Add to cart functionality (actual cart logic)
@@ -50,7 +47,6 @@ const ProductListScreenComponent: React.FC = () => {
     return <ProductListLoadingScreen />;
   }
 
-  // Professional e-commerce layout with pagination
   return (
     <>
       <ProductListLayout
@@ -93,7 +89,6 @@ const ProductListScreenComponent: React.FC = () => {
         onSortModalClose={handleSortModalClose}
       />
 
-      {/* Toast Notification */}
       <Toast
         visible={toast.visible}
         message={toast.message}
