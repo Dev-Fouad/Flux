@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 import { ProductCategory } from '../../types';
-import { PRODUCT_CATEGORIES } from '../../data/mockProducts';
+import { PRODUCT_CATEGORIES } from '../../constants/mockProducts';
 
 interface ProductListHeaderProps {
   searchTerm: string;
@@ -37,7 +37,6 @@ export const ProductListHeader: React.FC<ProductListHeaderProps> = ({
         </Text>
       </View>
 
-      {/* Search Bar */}
       <View className="relative mb-comfortable">
         <View 
           style={{
@@ -88,7 +87,6 @@ export const ProductListHeader: React.FC<ProductListHeaderProps> = ({
         </View>
       </View>
 
-      {/* Categories */}
       <View className="mb-comfortable">
         <Text className="text-body-secondary font-medium text-void-black-700 mb-cozy">
           Categories

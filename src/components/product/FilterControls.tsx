@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { X, ChevronDown } from 'lucide-react-native';
 import { ProductCategory } from '../../types';
-import { SORT_OPTIONS } from '../../data/mockProducts';
+import { SORT_OPTIONS } from '../../constants/mockProducts';
 
 interface FilterControlsProps {
   selectedCategories: ProductCategory[];

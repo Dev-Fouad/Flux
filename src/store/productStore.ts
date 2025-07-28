@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Product, ProductCategory, SortOption } from '../types';
-import { mockProducts } from '../data/mockProducts';
+import { mockProducts } from '../constants/mockProducts';
 
 interface ProductStore {
   filteredProducts: Product[];

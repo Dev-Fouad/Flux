@@ -13,7 +13,7 @@ import { FluxPagination } from '../pagination/FluxPagination';
 import { EmptyState } from './EmptyState';
 import { SortModal } from '../SortModal';
 import { Product } from '../../types';
-import { SORT_OPTIONS } from '../../data/mockProducts';
+import { SORT_OPTIONS } from '../../constants/mockProducts';
 import { usePaginationStore } from '../../store/paginationStore';
 
 interface ProductListLayoutProps {
