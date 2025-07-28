@@ -1,4 +1,5 @@
-export { ProductCard } from './product/ProductCard';export { ProductListHeader } from './product/ProductListHeader';
+export { ProductCard } from './product/ProductCard';
+export { default as ProductListHeader } from './product/ProductListHeader';
 export { ProductListLayout } from './product/ProductListLayout';
 export { ProductListLoadingScreen } from './product/ProductListLoadingScreen';
 export { FilterControls } from './product/FilterControls';
