@@ -63,7 +63,7 @@ The Metro bundler will launch, and you can run the app on your simulator or phys
 <img width="360" height="740" alt="image" src="https://github.com/user-attachments/assets/c157e282-72b2-4416-a735-e9f9ae1decec" />
 
 
-- **Real-time Search & Filtering** –
+- **Real-time Search & sorting** –
 <img width="360" height="740" alt="image" alt="image" src="https://github.com/user-attachments/assets/8f324fd2-1032-4168-a431-469d92d3f556" />
 
 
