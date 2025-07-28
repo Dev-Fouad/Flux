@@ -5,3 +5,4 @@ export { useProducts } from './useProducts';
 export { useSearch } from './useSearch';
 export { useFilters } from './useFilters';
 export { useSort } from './useSort';
+export { useToast } from './useToast';
