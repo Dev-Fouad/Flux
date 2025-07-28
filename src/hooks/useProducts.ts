@@ -32,7 +32,7 @@ export const useProducts = () => {
   // Reset pagination when filters change
   React.useEffect(() => {
     reset();
-  }, [store.filters.categories, store.filters.searchQuery, store.filters.priceRange, reset]);
+  }, [store.categories, store.searchQuery, reset]);
 
   return {
     // Paginated data

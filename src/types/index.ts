@@ -5,41 +5,20 @@ export interface Product {
   originalPrice?: number;
   discount?: number;
   image: string;
-  images: string[];
   category: ProductCategory;
   rating: number;
   reviewCount: number;
-  description: string;
   brand: string;
-  inStock: boolean;
-  featured: boolean;
   isNew: boolean;
-  tags: string[];
   createdAt: string;
 }
 
-export type ProductCategory = 
-  | 'Electronics'
-  | 'Clothing'
-  | 'Home & Garden'
-  | 'Books'
-  | 'Sports';
-
-export type CategoryOption = ProductCategory | 'All';
-
-export interface FilterState {
-  categories: ProductCategory[];
-  priceRange: {
-    min: number;
-    max: number;
-  };
-  searchQuery: string;
-}
+export type ProductCategory = 'Electronics' | 'Clothing' | 'Home & Garden' | 'Books' | 'Sports';
 
 export type SortOption = 
-  | 'price-low-high'
+  | 'newest-first'
+  | 'price-low-high' 
   | 'price-high-low'
   | 'name-a-z'
   | 'name-z-a'
-  | 'rating-high-low'
-  | 'newest-first'; 
+  | 'rating-high-low'; 

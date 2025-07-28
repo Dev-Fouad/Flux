@@ -5,9 +5,8 @@ import { ProductCategory } from '../types';
 
 export const useFilters = () => {
   const {
-    filters,
+    categories,
     addCategoryFilter,
-    removeCategoryFilter,
     clearFilters,
   } = useProductStore();
   
@@ -28,10 +27,10 @@ export const useFilters = () => {
     clearSearch();
   }, [clearFilters, clearSearch]);
 
-  const isAllActive = filters.categories.length === 0;
+  const isAllActive = categories.length === 0;
 
   return {
-    selectedCategories: filters.categories,
+    selectedCategories: categories,
     handleCategoryPress,
     handleClearAllFilters,
     isAllActive,
