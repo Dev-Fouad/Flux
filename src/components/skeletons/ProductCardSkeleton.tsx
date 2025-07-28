@@ -30,9 +30,9 @@ export const ProductCardSkeleton = () => {
         {/* Rating section */}
         <View className="flex-row items-center mb-comfortable">
           <View className="flex-row mr-cozy">
-            {[1, 2, 3, 4, 5].map((_, index) => (
-              <ShimmerView
-                key={index}
+            {[...Array(5)].map((_, i) => (
+              <ShimmerView 
+                key={i} 
                 className="bg-void-black-100 w-3 h-3 rounded-full mr-hairline"
               />
             ))}
