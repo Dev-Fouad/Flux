@@ -1,8 +1,20 @@
 import { create } from 'zustand';
-import { Product, ProductCategory, SortOption, FilterState, ProductListState } from '../types';
+import { Product, ProductCategory, SortOption, FilterState } from '../types';
 import { mockProducts } from '../data/mockProducts';
 
-interface ProductStore extends ProductListState {
+interface ProductStore {
+  // Data
+  products: Product[];
+  filteredProducts: Product[];
+  
+  // Filters & Search
+  filters: FilterState;
+  sortBy: SortOption;
+  
+  // Loading states
+  isLoading: boolean;
+  
+  // Actions
   setProducts: (products: Product[]) => void;
   setFilters: (filters: Partial<FilterState>) => void;
   setSortBy: (sortBy: SortOption) => void;
@@ -11,31 +23,24 @@ interface ProductStore extends ProductListState {
   removeCategoryFilter: (category: ProductCategory) => void;
   setPriceRange: (min: number, max: number) => void;
   clearFilters: () => void;
-  loadMoreProducts: () => void;
   refreshProducts: () => void;
   
+  // Internal methods
   applyFiltersAndSort: () => void;
   getFilteredProducts: () => Product[];
   sortProducts: (products: Product[]) => Product[];
 }
 
-const initialState: ProductListState = {
+const initialState = {
   products: mockProducts,
-  filteredProducts: mockProducts.slice(0, 12), // Initial 12 products for better performance
+  filteredProducts: mockProducts,
   filters: {
     categories: [],
     priceRange: { min: 0, max: 500000 },
     searchQuery: '',
   },
-  sortBy: 'newest-first',
-  pagination: {
-    page: 1,
-    limit: 12, // Load 12 products per page for optimal performance
-    total: mockProducts.length,
-    hasMore: mockProducts.length > 12,
-  },
+  sortBy: 'newest-first' as SortOption,
   isLoading: false,
-  isLoadingMore: false,
 };
 
 export const useProductStore = create<ProductStore>((set, get) => ({
@@ -55,24 +60,21 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     get().applyFiltersAndSort();
   },
 
-  setSearchQuery: (searchQuery) => {
+  setSearchQuery: (query) => {
     set((state) => ({
-      filters: { ...state.filters, searchQuery },
+      filters: { ...state.filters, searchQuery: query },
     }));
     get().applyFiltersAndSort();
   },
 
   addCategoryFilter: (category) => {
-    const state = get();
-    if (!state.filters.categories.includes(category)) {
-      set((state) => ({
-        filters: {
-          ...state.filters,
-          categories: [...state.filters.categories, category],
-        },
-      }));
-      get().applyFiltersAndSort();
-    }
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        categories: [...state.filters.categories, category],
+      },
+    }));
+    get().applyFiltersAndSort();
   },
 
   removeCategoryFilter: (category) => {
@@ -100,37 +102,10 @@ export const useProductStore = create<ProductStore>((set, get) => ({
       filters: {
         categories: [],
         priceRange: { min: 0, max: 500000 },
-        searchQuery: '',
+        searchQuery: state.filters.searchQuery, // Keep 
       },
     }));
     get().applyFiltersAndSort();
-  },
-
-  loadMoreProducts: () => {
-    const state = get();
-    if (!state.pagination.hasMore || state.isLoadingMore) return;
-
-    set({ isLoadingMore: true });
-    const loadDelay = 2000; // Visible loading for skeleton demonstration
-    setTimeout(() => {
-      const state = get();
-      const nextPage = state.pagination.page + 1;
-      const startIndex = (nextPage - 1) * state.pagination.limit;
-      const endIndex = startIndex + state.pagination.limit;
-      
-      let filtered = get().getFilteredProducts();
-      const newProducts = filtered.slice(startIndex, endIndex);
-      
-      set((state) => ({
-        filteredProducts: [...state.filteredProducts, ...newProducts],
-        pagination: {
-          ...state.pagination,
-          page: nextPage,
-          hasMore: endIndex < filtered.length,
-        },
-        isLoadingMore: false,
-      }));
-    }, loadDelay);
   },
 
   refreshProducts: () => {
@@ -146,62 +121,52 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   },
 
   applyFiltersAndSort: () => {
-    const state = get();
     let filtered = get().getFilteredProducts();
     
     // Apply sorting
     filtered = get().sortProducts(filtered);
     
-    // Reset pagination and show first page
-    const firstPageProducts = filtered.slice(0, state.pagination.limit);
-    
+    // Set all filtered products
     set({
-      filteredProducts: firstPageProducts,
-      pagination: {
-        ...state.pagination,
-        page: 1,
-        total: filtered.length,
-        hasMore: filtered.length > state.pagination.limit,
-      },
+      filteredProducts: filtered,
     });
   },
 
-  // Helper functions (not exposed in the store interface)
-  getFilteredProducts: (): Product[] => {
-    const state = get();
-    let filtered = [...state.products];
+  getFilteredProducts: () => {
+    const { products, filters } = get();
+    let filtered = [...products];
 
-    // Filter by search query
-    if (state.filters.searchQuery) {
-      const query = state.filters.searchQuery.toLowerCase();
+    // Apply search filter
+    if (filters.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
       filtered = filtered.filter(
         (product) =>
           product.name.toLowerCase().includes(query) ||
           product.brand.toLowerCase().includes(query) ||
           product.category.toLowerCase().includes(query) ||
-          product.tags.some((tag) => tag.toLowerCase().includes(query))
+          product.description.toLowerCase().includes(query)
       );
     }
 
-    // Filter by categories
-    if (state.filters.categories.length > 0) {
+    // Apply category filters
+    if (filters.categories.length > 0) {
       filtered = filtered.filter((product) =>
-        state.filters.categories.includes(product.category)
+        filters.categories.includes(product.category)
       );
     }
 
-    // Filter by price range
+    // Apply price range filter
     filtered = filtered.filter(
       (product) =>
-        product.price >= state.filters.priceRange.min &&
-        product.price <= state.filters.priceRange.max
+        product.price >= filters.priceRange.min &&
+        product.price <= filters.priceRange.max
     );
 
     return filtered;
   },
 
-  sortProducts: (products: Product[]): Product[] => {
-    const sortBy = get().sortBy;
+  sortProducts: (products) => {
+    const { sortBy } = get();
     const sorted = [...products];
 
     switch (sortBy) {
@@ -221,8 +186,9 @@ export const useProductStore = create<ProductStore>((set, get) => ({
           return b.rating - a.rating;
         });
       case 'newest-first':
-        return sorted.sort((a, b) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        return sorted.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
       default:
         return sorted;

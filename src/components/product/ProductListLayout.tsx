@@ -6,21 +6,29 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { ProductCard } from './ProductCard';
+import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { ProductListHeader } from './ProductListHeader';
 import { FilterControls } from './FilterControls';
-import { InfiniteLoader, EndOfCatalog } from './LoadingStates';
+import { FluxPagination } from '../pagination/FluxPagination';
 import { EmptyState } from './EmptyState';
 import { SortModal } from '../SortModal';
 import { Product } from '../../types';
 import { SORT_OPTIONS } from '../../data/mockProducts';
+import { usePaginationStore } from '../../store/paginationStore';
 
 interface ProductListLayoutProps {
-  // Data
+  // Product data
   products: Product[];
-  total: number;
   isLoading: boolean;
-  isLoadingMore: boolean;
-  hasMore: boolean;
+  
+  // Pagination data
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  startIndex: number;
+  endIndex: number;
   
   // Search & Filters
   searchTerm: string;
@@ -34,7 +42,6 @@ interface ProductListLayoutProps {
   onCategoryPress: (category: any) => void;
   onClearFilters: () => void;
   onSortPress: () => void;
-  onLoadMore: () => void;
   onRefresh: () => void;
   
   // Product actions
@@ -50,10 +57,14 @@ interface ProductListLayoutProps {
 
 export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
   products,
-  total,
   isLoading,
-  isLoadingMore,
-  hasMore,
+  totalCount,
+  totalPages,
+  currentPage,
+  hasNextPage,
+  hasPrevPage,
+  startIndex,
+  endIndex,
   searchTerm,
   selectedCategories,
   sortBy,
@@ -63,7 +74,6 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
   onCategoryPress,
   onClearFilters,
   onSortPress,
-  onLoadMore,
   onRefresh,
   onProductPress,
   onAddToCart,
@@ -72,40 +82,57 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
   onSortSelect,
   onSortModalClose,
 }) => {
-  // Memoized styles and handlers for optimal performance
+  // Get pagination loading state
+  const { isLoadingPage } = usePaginationStore();
+
+  // Memoized styles for optimal performance
   const cardWrapperStyle = useMemo(() => ({
     width: '50%' as const,
     paddingHorizontal: 4
   }), []);
 
   const contentContainerStyle = useMemo(() => ({
-    paddingBottom: 32,
+    flexGrow: 1,
   }), []);
 
   const columnWrapperStyle = useMemo(() => ({
     paddingHorizontal: 12,
+    paddingVertical: 6,
   }), []);
+
+  // Generate skeleton data for consistent layout during pagination loading
+  const skeletonData = useMemo(() => {
+    return Array.from({ length: 6 }, (_, index) => ({ id: `skeleton-${index}` }));
+  }, []);
 
   // Optimized render functions
-  const renderProductCard = useCallback(({ item }: { item: Product }) => (
-    <View style={cardWrapperStyle}>
-      <ProductCard
-        product={item}
-        onPress={() => onProductPress(item)}
-        onAddToCart={() => onAddToCart(item)}
-        onToggleFavorite={() => onToggleFavorite(item)}
-        isFavorite={false} // TODO: Get from favorites hook
-      />
-    </View>
-  ), [cardWrapperStyle, onProductPress, onAddToCart, onToggleFavorite]);
+  const renderProductCard = useCallback(({ item }: { item: Product | { id: string } }) => {
+    // Show skeleton during pagination loading
+    if (isLoadingPage || 'id' in item && item.id.startsWith('skeleton-')) {
+      return (
+        <View style={cardWrapperStyle}>
+          <ProductCardSkeleton />
+        </View>
+      );
+    }
 
-  const keyExtractor = useCallback((item: Product) => item.id, []);
+    const product = item as Product;
+    return (
+      <View style={cardWrapperStyle}>
+        <ProductCard
+          product={product}
+          onPress={() => onProductPress(product)}
+          onAddToCart={() => onAddToCart(product)}
+          onToggleFavorite={() => onToggleFavorite(product)}
+          isFavorite={false} // TODO: Get from favorites hook
+        />
+      </View>
+    );
+  }, [cardWrapperStyle, isLoadingPage, onProductPress, onAddToCart, onToggleFavorite]);
 
-  const getItemLayout = useCallback((data: any, index: number) => ({
-    length: 280,
-    offset: 280 * Math.floor(index / 2),
-    index,
-  }), []);
+  const keyExtractor = useCallback((item: Product | { id: string }) => {
+    return 'id' in item ? item.id : (item as Product).id;
+  }, []);
 
   // Memoized header component
   const renderHeader = useCallback(() => (
@@ -125,7 +152,7 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
         onClearFilters={onClearFilters}
         onClearSearch={onSearchClear}
         onSortPress={onSortPress}
-        totalProducts={total}
+        totalProducts={totalCount}
         displayedProducts={products.length}
       />
     </>
@@ -139,31 +166,37 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
     sortBy,
     onClearFilters,
     onSortPress,
-    total,
+    totalCount,
     products.length,
   ]);
-
-  const renderFooter = useCallback(() => (
-    <>
-      <InfiniteLoader isLoading={isLoadingMore} />
-      <EndOfCatalog hasMore={hasMore} totalProducts={total} />
-    </>
-  ), [isLoadingMore, hasMore, total]);
 
   const renderEmpty = useCallback(() => (
     <EmptyState onClearFilters={onClearFilters} />
   ), [onClearFilters]);
 
-  const handleEndReached = useCallback(() => {
-    if (!isLoadingMore && hasMore) {
-      onLoadMore();
-    }
-  }, [isLoadingMore, hasMore, onLoadMore]);
+  // Scrollable pagination footer
+  const renderFooter = useCallback(() => {
+    if (products.length === 0) return null;
+    
+    return (
+      <FluxPagination
+        totalPages={totalPages}
+        totalCount={totalCount}
+        startIndex={startIndex}
+        endIndex={endIndex}
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+      />
+    );
+  }, [products.length, totalPages, totalCount, startIndex, endIndex, hasNextPage, hasPrevPage]);
+
+  // Determine what data to show
+  const displayData = isLoadingPage ? skeletonData : products;
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
       <FlatList
-        data={products}
+        data={displayData}
         renderItem={renderProductCard}
         keyExtractor={keyExtractor}
         numColumns={2}
@@ -179,24 +212,19 @@ export const ProductListLayout: React.FC<ProductListLayoutProps> = ({
             tintColor="#6366f1"
           />
         }
-        onEndReached={handleEndReached}
-        onEndReachedThreshold={0.3}
         contentContainerStyle={contentContainerStyle}
         columnWrapperStyle={columnWrapperStyle}
-        // Performance optimizations
-        initialNumToRender={4}
-        maxToRenderPerBatch={2}
-        windowSize={5}
-        removeClippedSubviews={true}
-        updateCellsBatchingPeriod={100}
-        getItemLayout={getItemLayout}
-        disableVirtualization={false}
-        scrollEventThrottle={32}
+        // Optimized for pagination (smaller lists)
+        initialNumToRender={6}
+        maxToRenderPerBatch={6}
+        windowSize={2}
+        removeClippedSubviews={false} // Better for paginated small lists
+        scrollEventThrottle={16}
       />
       
       <SortModal
         visible={sortModalVisible}
-        options={SORT_OPTIONS}
+        options={SORT_OPTIONS as any}
         selected={sortBy}
         onSelect={onSortSelect}
         onClose={onSortModalClose}

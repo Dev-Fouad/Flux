@@ -5,7 +5,9 @@ export { FilterControls } from './product/FilterControls';
 export { ProductListLayout } from './product/ProductListLayout';
 export { ProductListLoadingScreen } from './product/ProductListLoadingScreen';
 export { EmptyState } from './product/EmptyState';
-export { InfiniteLoader, EndOfCatalog } from './product/LoadingStates';
+
+// Pagination components
+export { FluxPagination } from './pagination/FluxPagination';
 
 // Skeleton components
 export { ProductCardSkeleton } from './skeletons/ProductCardSkeleton';

@@ -1,6 +1,5 @@
 // Data fetching hooks
 export { useProducts } from './useProducts';
-export { useInfiniteProducts } from './useInfiniteProducts';
 
 // Interaction hooks  
 export { useSearch } from './useSearch';

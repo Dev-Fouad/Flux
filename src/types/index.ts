@@ -42,25 +42,4 @@ export type SortOption =
   | 'name-a-z'
   | 'name-z-a'
   | 'rating-high-low'
-  | 'newest-first';
-
-export interface PaginationState {
-  page: number;
-  limit: number;
-  total: number;
-  hasMore: boolean;
-}
-
-export interface ProductListState {
-  products: Product[];
-  filteredProducts: Product[];
-  filters: FilterState;
-  sortBy: SortOption;
-  pagination: PaginationState;
-  isLoading: boolean;
-  isLoadingMore: boolean;
-}
-
-export interface StoreState {
-  productList: ProductListState;
-} 
+  | 'newest-first'; 

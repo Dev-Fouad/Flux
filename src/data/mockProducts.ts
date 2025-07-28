@@ -272,7 +272,7 @@ export const mockProducts: Product[] = [
     createdAt: '2024-03-08',
   },
 
-  // Additional products for pagination testing
+  // Additional products for variety
   {
     id: '14',
     name: 'Mechanical Gaming Keyboard',

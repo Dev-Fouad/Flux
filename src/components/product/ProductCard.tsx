@@ -88,12 +88,14 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
           {product.brand}
         </Text>
         
-        <Text 
-          className="text-body-primary font-semibold text-void-black-900 mb-cozy leading-6"
-          numberOfLines={2}
-        >
-          {product.name}
-        </Text>
+        <View className="h-12 mb-cozy justify-start">
+          <Text 
+            className="text-body-primary font-semibold text-void-black-900 leading-6"
+            numberOfLines={2}
+          >
+            {product.name}
+          </Text>
+        </View>
         
         <View className="flex-row items-center mb-comfortable">
           <View className="flex-row mr-tight">
@@ -105,15 +107,19 @@ const ProductCardComponent: React.FC<ProductCardProps> = ({
         </View>
         
         <View className="flex-row items-center justify-between mb-comfortable">
-          <View>
+          <View className="min-h-[48px] justify-center">
             <Text className="text-price-standard font-bold text-void-black-900">
               {formatPrice(product.price)}
             </Text>
-            {product.originalPrice && (
-              <Text className="text-body-secondary text-void-black-500 line-through">
-                {formatPrice(product.originalPrice)}
-              </Text>
-            )}
+            <View className="h-5 justify-center">
+              {product.originalPrice ? (
+                <Text className="text-body-secondary text-void-black-500 line-through">
+                  {formatPrice(product.originalPrice)}
+                </Text>
+              ) : (
+                <View />
+              )}
+            </View>
           </View>
         </View>
         
